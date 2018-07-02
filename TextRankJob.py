@@ -32,7 +32,7 @@ def textrankJob(n):
     keyword = textrankGet(n)
     # read testdata line by line
     for i in range(1,8):
-        with open('dataset' + str(i) +'.csv', 'w', newline='', encoding = 'utf-8') as res:
+        with open( n +'dataset' + str(i) +'.csv', 'w', newline='', encoding = 'utf-8') as res:
             writer = csv.writer(res)
             with open('./testData/dataset' + str(i)+ '.txt', 'r', newline='', encoding='utf-8') as txtfile:
                 tr = txtfile.readlines()
