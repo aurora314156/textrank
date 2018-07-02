@@ -2,77 +2,66 @@ import csv
 import json
 import os
 
-# ===== main func entry point =====
-def main():
+def textrankGet(n):
+    # read textrank result
+    with open('./textrankRes/' + n + '.csv', 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        column = [row[0] for row in reader]
 
-    sTime = time.time()
-    # scrawler url setting
-    url = "http://140.124.183.5:8983/solr/EBCStation/select?indent=on&q=*:*&rows=500&wt=json"
-    request = requests.get(url).json()
-
-    # writing to csv set up
-    f = open('textRankJob.csv', 'w', newline='')
-    write = csv.writer(f)
-    csvtable= []
-
-    # experiment value
-    value = [0.33,0.35,0.385,0.4,0.45,0.5,0.55]
-    temp = []
-
-    # iterator all content
-    for i in range(150):
-        # store csv title
-        content = request['response']['docs'][j]['content']
-        content = HanziConv.toSimplified(content)
-        temp.append('Article :'+str(j))
-        write.writerow(temp)
-        temp.clear()
-        csvtable.append(content)
-        write.writerow(csvtable)
-        csvtable.clear()
-        # iterator all experiment value
-        for i in value:
-            temp.append(i)
-            # iterator all tf_idf
-            for r in range(len(result)):
-                # if tf_idf value bigger than experiment value
-                if result[r][1] > i:
-                    # then check keyword exist in content or not
-                    if result[r][0] in content:
-                        temp.append(HanziConv.toTraditional(result[r][0]))
-            csvtable.append(temp)
-            # writing result to csv
-            write.writerow(csvtable)
-            temp.clear()
-            csvtable.clear()
-
-    f.close()
+    # experiment value top k keyword of 40%/50%/60%
+    exp_value = [0.4, 0.5, 0.6]
+    keyword = []
+        
+    # get textrank top k% keyword from csv
+    for e in exp_value:
+        ind = 0
+        temp = []
+        for c in column:
+            if ind == (120*e):
+                break
+            temp.append(c)
+            ind += 1
+        keyword.append(temp)
+    
+    return keyword
 
 
-    # storing different(by experiment value) tf_idf result to csv
-    temp = []
-    for i in value:
-        fileName = str(i)
-        f = open(_resultDir + fileName+'.csv', 'w', newline='')
-        write = csv.writer(f)
-        for r in range(len(result)):
-            if result[r][1] > i:
-                temp.append(HanziConv.toTraditional(result[r][0]))
-                temp.append(result[r][1])
-                write.writerow(temp)
-            temp.clear()
-        f.close()
+def textrankJob(n):
+    
+    # get keyword
+    keyword = textrankGet(n)
+    # read testdata line by line
+    for i in range(1,8):
+        with open('dataset' + str(i) +'.csv', 'w', newline='', encoding = 'utf-8') as res:
+            writer = csv.writer(res)
+            with open('./testData/dataset' + str(i)+ '.txt', 'r', newline='', encoding='utf-8') as txtfile:
+                tr = txtfile.readlines()
+                flag = True
+                for t in tr:
+                    if flag is True:
+                        article = t
+                    else:
+                        # store keyword match on article content
+                        keywordMatch = []
+                        content = t
+                        # start match keyword and content
+                        for index in keyword:
+                            temp = []
+                            for k in index:
+                                if k in content:
+                                    temp.append(k)
+                            keywordMatch.append(temp)
+                        print(len(keywordMatch[0]))
+                        print(len(keywordMatch[1]))
+                        print(len(keywordMatch[2]))
+                        # write match result to csv
+                        writer.writerow([article.strip()])
+                        writer.writerow([content.strip()])
+                        writer.writerow(['40%', keywordMatch[0]])
+                        writer.writerow(['50%', keywordMatch[1]])
+                        writer.writerow(['60%', keywordMatch[2]])
+                        writer.writerow("\n")
 
+                    flag = not flag
 
-
-# ====== initial setting ======
-
-# jieba setting
-print("Start loading initial setting!")
-relativePath = os.getcwd()
-jieba.analyse.set_stop_words(relativePath + "/jieba_setting/stopwords.txt")
-
-# ====== initial setting ======
-
-if __name__ == "__main__":
-    main()
+        print("----------------------------------------------")

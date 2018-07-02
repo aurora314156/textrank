@@ -5,9 +5,13 @@ import time
 import os
 from TextRank import textrank
 from TextRankRes import textrankRes
+from TextRankJob import textrankJob
+
+def nowtime():
+    return time.time()
 
 def main():
-    sTime = time.time()
+    sTime = nowtime()
     
     # scrawler setting
     print("Start get scrawler data!")
@@ -20,7 +24,7 @@ def main():
     articleLen = article['response']['numFound']
     for n in name:
         corpus = ""
-        sTime = time.time()
+        sTime = nowtime()
         for a in range(articleLen):
             try:
                 temp = article['response']['docs'][a]['name']
@@ -29,12 +33,19 @@ def main():
             if article['response']['docs'][a]['name'] == n:
                 corpus += article['response']['docs'][a]['content']
         # call textrank function
-        trRes = textrank(corpus)
-        print("Name: %s textrank took %.fs." % ((n),(time.time()-sTime)))
-        
-        # call store result function
-        textrankRes(n, trRes)
+        sTime = nowtime()
+        #trRes = textrank(corpus)
+        #print("Name: %s textrank calculate took %.fs." % ((n),(time.time()-sTime)))
 
+        # call store textrank result function
+        sTime = nowtime()
+        #textrankRes(n,trRes)
+        #print("Store %s textrank result took %.fs." % ((n),(time.time()-sTime)))
+        
+        # call experiment function
+        sTime = nowtime()
+        textrankJob(n)
+        print("Name: %s textrank match took %.fs." % ((n),(time.time()-sTime)))
 
  # jieba setting
 print("Start loading initial setting!")
