@@ -27,7 +27,6 @@ def textrankGet(n):
 
 
 def textrankJob(n):
-    
     # get keyword
     keyword = textrankGet(n)
     # read testdata line by line
@@ -51,15 +50,16 @@ def textrankJob(n):
                                 if k in content:
                                     temp.append(k)
                             keywordMatch.append(temp)
-                        print(len(keywordMatch[0]))
-                        print(len(keywordMatch[1]))
-                        print(len(keywordMatch[2]))
                         # write match result to csv
                         writer.writerow([article.strip()])
                         writer.writerow([content.strip()])
-                        writer.writerow(['40%', keywordMatch[0]])
-                        writer.writerow(['50%', keywordMatch[1]])
-                        writer.writerow(['60%', keywordMatch[2]])
+                        exp_value = [0.4, 0.5, 0.6]
+                        for j in range(3):
+                            tempkeyword = []
+                            tempkeyword.append(exp_value[j])
+                            for k in keywordMatch[j]:
+                                tempkeyword.append(k)
+                            writer.writerow(tempkeyword)
                         writer.writerow("\n")
 
                     flag = not flag
