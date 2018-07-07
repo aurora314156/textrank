@@ -17,7 +17,7 @@ def textrankGet(n):
         ind = 0
         temp = []
         for c in column:
-            if ind == (120*e):
+            if ind == (200*e):
                 break
             temp.append(c)
             ind += 1
