@@ -1,29 +1,7 @@
 import csv
 import json
 import os
-
-def textrankGet(n):
-    # read textrank result
-    with open('./textrankRes/' + n + '.csv', 'r', newline='', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile)
-        column = [row[0] for row in reader]
-
-    # experiment value top k keyword of 40%/50%/60%
-    exp_value = [0.4, 0.5, 0.6]
-    keyword = []
-        
-    # get textrank top k% keyword from csv
-    for e in exp_value:
-        ind = 0
-        temp = []
-        for c in column:
-            if ind == (200*e):
-                break
-            temp.append(c)
-            ind += 1
-        keyword.append(temp)
-    
-    return keyword
+from TextRankResGet import textrankGet
 
 
 def textrankJob(n):
@@ -31,7 +9,7 @@ def textrankJob(n):
     keyword = textrankGet(n)
     # read testdata line by line
     for i in range(1,8):
-        with open( n +'dataset' + str(i) +'.csv', 'w', newline='', encoding = 'utf-8') as res:
+        with open('./finalResult/'+ n +'dataset' + str(i) +'.csv', 'w', newline='', encoding = 'utf-8') as res:
             writer = csv.writer(res)
             with open('./testData/dataset' + str(i)+ '.txt', 'r', newline='', encoding='utf-8') as txtfile:
                 tr = txtfile.readlines()
@@ -64,4 +42,4 @@ def textrankJob(n):
 
                     flag = not flag
 
-        print("----------------------------------------------")
+    print("------------------------------------------")
