@@ -2,7 +2,7 @@ import csv
 import json
 import os
 from TextRankResGet import textrankGet
-
+from hanziconv import HanziConv
 
 def textrankJob(n):
     # get keyword
@@ -25,20 +25,31 @@ def textrankJob(n):
                         for index in keyword:
                             temp = []
                             for k in index:
+                                if n == 'tfidf':
+                                    k = HanziConv.toTraditional(k)
                                 if k in content:
                                     temp.append(k)
                             keywordMatch.append(temp)
                         # write match result to csv
                         writer.writerow([article.strip()])
                         writer.writerow([content.strip()])
-                        exp_value = [0.4, 0.5, 0.6]
-                        for j in range(3):
+                        if n == 'tfidf':
                             tempkeyword = []
-                            tempkeyword.append(exp_value[j])
-                            for k in keywordMatch[j]:
+                            string = "Result:"
+                            tempkeyword.append(string)
+                            for k in keywordMatch[0]:
                                 tempkeyword.append(k)
                             writer.writerow(tempkeyword)
-                        writer.writerow("\n")
+                            writer.writerow("\n")
+                        else:
+                            exp_value = [0.4, 0.5, 0.6]
+                            for j in range(3):
+                                tempkeyword = []
+                                tempkeyword.append(exp_value[j])
+                                for k in keywordMatch[j]:
+                                    tempkeyword.append(k)
+                                writer.writerow(tempkeyword)
+                            writer.writerow("\n")
 
                     flag = not flag
 

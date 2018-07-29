@@ -2,9 +2,13 @@ import jieba.posseg as pseg
 from hanziconv import HanziConv
 
 # 標註所有名詞詞性的詞
-def posTagging(word):
+def posTagging(word, n):
     try:
-        simpWord = HanziConv.toSimplified(word)
+        # tfidf result was simplified words.
+        if n != 'tfidf':
+            simpWord = HanziConv.toSimplified(word)
+        else:
+            simpWord = word
         tagRes = pseg.cut(simpWord)
     except ValueError:
         return 0

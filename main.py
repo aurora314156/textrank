@@ -20,8 +20,8 @@ def main():
     # print("Scrawler took %.fs." % (time.time()-sTime))
     # db length
     # articleLen = article['response']['numFound']
-    name = ['兒童新聞', '創設市集', '技職最前線', '教育開講', '星期講座', '不太乖學堂','國際教育心動線','all']
-
+    name = ['兒童新聞', '創設市集', '技職最前線', '教育開講', '星期講座', '不太乖學堂','國際教育心動線','all','tfidf']
+    
     for n in name:
         sTime = nowtime()
         # crawler for textrank corpus
